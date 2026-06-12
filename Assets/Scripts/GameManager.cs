@@ -8,8 +8,10 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] private Transform[] _spawnPoints;
 
+
     public NetworkVariable<int> RedScore = new();
     public NetworkVariable<int> BlueScore = new();
+    public NetworkVariable<float> Timer = new();
 
     private int _playerCount;
 
@@ -37,24 +39,36 @@ public class GameManager : NetworkBehaviour
 
         switch(teams) 
         {
-            case Team.Red:RedScore.Value = points; break;
+            case Team.Red:RedScore.Value = RedScore.Value + points; break;
 
-            case Team.Blue:BlueScore.Value = points; break;
+            case Team.Blue:BlueScore.Value = BlueScore.Value + points; break;
         }
 
+
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsServer) 
+        {
+            Timer.Value = 60;
+        }
     }
 
     void Update()
     {
-        if (Keyboard.current.hKey.wasPressedThisFrame)
+        
+        if (IsServer)
         {
-            NetworkManager.Singleton.StartHost(); //Iniciamos el Host
+            Timer.Value -= Time.deltaTime;
+
+            if(Timer.Value <= 0)
+            {
+                Timer.Value = 0;
+            }
+
         }
 
-        if (Keyboard.current.cKey.wasPressedThisFrame)
-        {
-            NetworkManager.Singleton.StartClient(); //Iniciamos como client
-        }
     }
 
     public Vector3 GetSpawmPosition(int Index)
