@@ -12,7 +12,7 @@ public class MenuManager : MonoBehaviour
     public void StartHost()
     {
         NetworkManager.Singleton.StartHost();
-        NetworkManager.Singleton.SceneManager.LoadScene("Game",LoadSceneMode.Single) ;
+        NetworkManager.Singleton.SceneManager.LoadScene("Game",LoadSceneMode.Single);
     }
 
     public void StartClient()
